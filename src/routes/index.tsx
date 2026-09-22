@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ChevronDown, Check, Heart, ShieldCheck, Sparkles } from "lucide-react";
+import { ChevronDown, Check, Heart, ShieldCheck } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -29,6 +29,8 @@ import proof4 from "@/assets/imgi_57_Imagem-do-WhatsApp-de-2025-10-15-as-08.18.5
 declare module "react" { namespace JSX { interface IntrinsicElements { "vturb-smartplayer": React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>; } } }
 
 const CHECKOUT = "https://pay.hotmart.com/X88395451D?off=o69s199w&checkoutMode=10&bid=1752756480235&fromExitPopup=true";
+const COMPLETE_CHECKOUT = "https://pay.hotmart.com/X88395451D?off=7skbnr37&checkoutMode=10";
+const COMPLETE_UPSELL_CHECKOUT = "https://pay.hotmart.com/X88395451D?off=y194vq5g&checkoutMode=10";
 const DELAY = 1080 * 1000;
 const STORAGE_KEY = "poder-do-parto-aula-started-at-v3";
 const trackingKeys = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "campaign_id", "adset_id", "ad_id"];
@@ -44,11 +46,35 @@ const modules = [
   ["Módulo 8", "Plano de Parto", "Crie um plano de parto que funciona e seja respeitado.", module8.url],
 ];
 const bonuses = [bonus1, bonus2, bonus3, bonus4, bonus5, bonus6, bonus7];
+const essentialFeatures = [
+  "8 módulos de preparação para o parto",
+  "Preparo físico e emocional",
+  "Indução, cesárea e intervenções",
+  "Técnicas de alívio da dor",
+  "Construção do plano de parto",
+  "Acesso vitalício ao conteúdo",
+];
+const completeFeatures = [
+  "Tudo o que está no plano Essencial",
+  "Mari com Você: canal direto pelo WhatsApp",
+  "Mensagens de texto e áudio para tirar dúvidas",
+  "Apoio educativo durante toda a gestação",
+  "Acesso ao acompanhamento até o parto",
+];
+const comparison = [
+  ["Curso O Poder do Parto", true, true],
+  ["8 módulos de preparação", true, true],
+  ["Acesso vitalício", true, true],
+  ["Mari com Você: canal direto pelo WhatsApp", false, true],
+  ["Mensagens de texto e áudio", false, true],
+  ["Acompanhamento durante a gestação, até o parto", false, true],
+] as const;
 const faqs = [
-  ["O que vou receber?", "9 módulos com mais de 70 aulas, materiais de apoio e bônus exclusivos."],
-  ["Por quanto tempo tenho acesso?", "Vitalício! Você pode rever as aulas sempre que precisar."],
-  ["Consigo assistir mesmo com pouco tempo?", "Sim! As aulas são diretas e objetivas e você pode ver quando e onde quiser."],
-  ["Quais são as formas de pagamento?", "Cartão de crédito, Pix ou boleto à vista."],
+  ["Qual é a diferença entre Essencial e Completo?", "O Essencial dá acesso ao curso O Poder do Parto. O Completo inclui todo o conteúdo do Essencial e também o Mari com Você: um canal direto pelo WhatsApp para falar com a Mari durante a gestação, até o parto."],
+  ["Por quanto tempo tenho acesso?", "Os dois planos foram estruturados com acesso vitalício, para você rever o conteúdo sempre que precisar."],
+  ["Posso fazer mesmo estando no final da gestação?", "Sim. As aulas são organizadas para você priorizar os temas mais importantes conforme o momento da sua gestação."],
+  ["O curso substitui o acompanhamento médico?", "Não. O conteúdo é educativo e não substitui pré-natal, consulta, diagnóstico ou orientação da equipe responsável pela sua assistência."],
+  ["Como funciona a garantia?", "Você tem sete dias após a compra para conhecer o conteúdo e solicitar o reembolso, conforme as condições apresentadas no checkout."],
 ];
 
 export const Route = createFileRoute("/")({
@@ -62,10 +88,10 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function trackedCheckout() {
-  if (typeof window === "undefined") return CHECKOUT;
+function trackedCheckout(base = CHECKOUT) {
+  if (typeof window === "undefined") return base;
   const source = new URLSearchParams(window.location.search);
-  const url = new URL(CHECKOUT);
+  const url = new URL(base);
   const values: string[] = [];
   trackingKeys.forEach((key) => { const value = source.get(key); if (value) { url.searchParams.set(key, value); values.push(value); } });
   if (values.length) { const code = values.join("|"); url.searchParams.set("sck", code); url.searchParams.set("xcod", code); }
@@ -104,7 +130,7 @@ function Index() {
   }, []);
 
   useEffect(() => {
-    document.querySelectorAll<HTMLAnchorElement>('a[href*="hotmart.com"]').forEach((link) => { link.href = checkout; });
+    document.querySelectorAll<HTMLAnchorElement>('a[href*="hotmart.com"]').forEach((link) => { link.href = trackedCheckout(link.href); });
   }, [checkout, revealed]);
 
   return <main className="min-h-screen overflow-hidden bg-background text-foreground">
@@ -126,6 +152,7 @@ function Index() {
 }
 
 function Offer() {
+  const [upsellOpen, setUpsellOpen] = useState(false);
   return <div className="animate-in fade-in duration-700">
     <section className="bg-lavender px-5 py-16 text-center">
       <p className="font-semibold uppercase tracking-widest text-primary">Sua preparação começa agora</p>
@@ -145,12 +172,44 @@ function Offer() {
 
     <section className="bg-secondary px-5 py-16 sm:py-20"><div className="mx-auto grid max-w-4xl items-center gap-10 md:grid-cols-[260px_1fr]"><img src={guarantee.url} alt="Garantia incondicional de 7 dias" className="mx-auto w-56" /><div><div className="flex items-center gap-2 text-primary"><ShieldCheck /><span className="font-bold uppercase">Seu risco é zero</span></div><h2 className="mt-3 font-display text-3xl font-bold text-primary">7 dias de garantia incondicional</h2><p className="mt-4 leading-relaxed text-muted-foreground">Teste o curso completo. Se não amar o conteúdo ou sentir que ele não é para você, devolvemos 100% do valor pago — sem burocracia e sem questionamentos.</p></div></div></section>
 
-    <section className="bg-plum-deep px-5 py-16 text-center text-primary-foreground sm:py-24"><div className="mx-auto max-w-3xl"><Sparkles className="mx-auto size-9 text-gold" /><p className="mt-4 text-sm font-semibold uppercase tracking-widest text-gold">Oferta especial</p><h2 className="mt-3 font-display text-3xl font-bold sm:text-5xl">Comece hoje sua preparação</h2><ul className="mx-auto mt-8 grid max-w-xl gap-3 text-left">{["Um parto seguro e respeitoso","Preparação emocional e física","Proteção contra a violência obstétrica","Plano de parto completo e consciente","Acesso vitalício + garantia de 7 dias"].map(item=><li key={item} className="flex gap-3"><Check className="mt-0.5 size-5 shrink-0 text-gold" />{item}</li>)}</ul><div className="my-9"><p className="text-primary-foreground/60 line-through">De R$ 697</p><p className="mt-2 text-lg">12x de</p><p className="font-display text-5xl font-extrabold text-gold">R$ 30,72</p><p className="mt-2">ou R$ 297,00 à vista</p></div><CTA /><p className="mt-4 flex items-center justify-center gap-2 text-xs text-primary-foreground/70"><ShieldCheck className="size-4" /> Compra segura • Acesso imediato</p></div></section>
+    <section id="planos" className="scroll-mt-4 px-5 py-16 sm:py-24">
+      <div className="mx-auto max-w-6xl">
+        <SectionTitle eyebrow="Escolha sua experiência" title="Qual preparação combina com você?" />
+        <p className="mx-auto mt-5 max-w-3xl text-center text-muted-foreground">Os dois planos oferecem o curso completo. No plano Completo, você também conta com um canal direto com a Mari durante a gestação.</p>
+        <div className="mt-12 grid gap-8 lg:grid-cols-2">
+          <PlanCard name="O Poder do Parto Essencial" subtitle="Para quem quer compreender o parto, reconhecer escolhas e chegar mais preparada." amount="30,72" cash="297,00" features={essentialFeatures} onSelect={() => setUpsellOpen(true)} />
+          <PlanCard name="O Poder do Parto Completo" subtitle="Para quem quer todo o curso e a tranquilidade de poder falar diretamente com a Mari durante a gestação." amount="32,83" cash="394,00" features={completeFeatures} href={COMPLETE_CHECKOUT} featured />
+        </div>
+      </div>
+    </section>
 
-    <section className="px-5 py-16 sm:py-24"><div className="mx-auto max-w-3xl"><SectionTitle eyebrow="FAQ" title="Perguntas Frequentes" /><div className="mt-9 divide-y divide-border border-y border-border">{faqs.map(([q,a])=><details key={q} className="group py-1"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-semibold text-primary">{q}<ChevronDown className="size-5 shrink-0 transition group-open:rotate-180" /></summary><p className="pb-5 leading-relaxed text-muted-foreground">{a}</p></details>)}</div></div></section>
+    <section className="px-5 pb-16 sm:pb-24">
+      <div className="mx-auto max-w-6xl">
+        <SectionTitle eyebrow="Compare com calma" title="Veja a diferença entre os planos" />
+        <div className="mt-10 overflow-hidden rounded-md border border-border bg-card shadow-sm">
+          <div className="grid grid-cols-[minmax(0,1.8fr)_minmax(70px,0.6fr)_minmax(70px,0.6fr)] bg-secondary px-4 py-4 text-sm font-bold sm:px-6"><div>O que você recebe</div><div className="text-center">Essencial</div><div className="text-center">Completo</div></div>
+          {comparison.map(([label, essential, complete]) => <div key={label} className="grid grid-cols-[minmax(0,1.8fr)_minmax(70px,0.6fr)_minmax(70px,0.6fr)] items-center border-t border-border px-4 py-4 text-sm sm:px-6 sm:text-base"><div>{label}</div><div>{essential ? <Check className="mx-auto size-5 text-success" strokeWidth={3} /> : <span className="block text-center text-muted-foreground">—</span>}</div><div>{complete ? <Check className="mx-auto size-5 text-success" strokeWidth={3} /> : <span className="block text-center text-muted-foreground">—</span>}</div></div>)}
+        </div>
+      </div>
+    </section>
+
+    <section className="px-5 py-16 sm:py-24"><div className="mx-auto max-w-3xl"><SectionTitle eyebrow="Dúvidas frequentes" title="Antes de escolher" /><div className="mt-9 divide-y divide-border border-y border-border">{faqs.map(([q,a])=><details key={q} className="group py-1"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-semibold text-primary">{q}<ChevronDown className="size-5 shrink-0 transition group-open:rotate-180" /></summary><p className="pb-5 leading-relaxed text-muted-foreground">{a}</p></details>)}</div></div></section>
+
+    {upsellOpen && <div className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/60 p-4" role="dialog" aria-modal="true" aria-labelledby="upsell-title" onClick={() => setUpsellOpen(false)}><div className="w-full max-w-md rounded-md bg-background p-6 shadow-2xl sm:p-8" onClick={(event) => event.stopPropagation()}><p className="text-xs font-bold uppercase text-primary">Oferta especial — só agora</p><h2 id="upsell-title" className="mt-2 font-display text-2xl font-bold">O Poder do Parto Completo</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Leve o acompanhamento direto com a Mari pelo WhatsApp junto com a sua preparação Essencial.</p><div className="my-5 rounded-md bg-secondary p-4 text-center"><p className="text-sm text-muted-foreground line-through">de R$ 97,00</p><p className="font-display text-4xl font-bold text-primary">por R$ 48,50</p><p className="mt-1 text-xs font-bold uppercase text-primary">50% de desconto</p></div><div className="grid gap-3"><Button asChild className="h-auto py-4 font-bold"><a href={COMPLETE_UPSELL_CHECKOUT}>Sim, quero esta opção</a></Button><Button asChild variant="outline" className="h-auto py-3 font-bold"><a href={CHECKOUT}>Continuar apenas com o Essencial</a></Button><Button variant="ghost" onClick={() => setUpsellOpen(false)}>Voltar e comparar</Button></div><p className="mt-4 text-center text-xs text-muted-foreground">Garantia incondicional de 7 dias • Pagamento seguro</p></div></div>}
 
     <footer className="bg-plum-deep px-5 py-12 text-center text-primary-foreground"><img src={footerLogo.url} alt="O Poder do Parto" className="mx-auto w-48" /><p className="mt-6 text-xs text-primary-foreground/60">© 2025 Mariana Betioli. Todos os direitos reservados.</p><div className="mt-4 flex justify-center gap-2 text-gold"><Heart className="size-4" /></div></footer>
   </div>;
+}
+
+function PlanCard({ name, subtitle, amount, cash, features, href, featured=false, onSelect }: { name:string; subtitle:string; amount:string; cash:string; features:string[]; href?:string; featured?:boolean; onSelect?:()=>void }) {
+  return <article className={`relative flex flex-col rounded-md border bg-card p-6 shadow-sm sm:p-8 ${featured ? "border-2 border-primary shadow-xl lg:-translate-y-2" : "border-border"}`}>
+    {featured && <span className="absolute right-6 top-0 -translate-y-1/2 rounded-md bg-primary px-4 py-2 text-xs font-bold uppercase text-primary-foreground">Mais escolhido</span>}
+    <p className="text-xs font-bold uppercase text-primary">Plano {featured ? "completo" : "essencial"}</p><h3 className="mt-3 font-display text-2xl font-bold sm:text-3xl">{name}</h3><p className="mt-3 min-h-16 text-muted-foreground">{subtitle}</p>
+    <div className="mt-7 text-primary"><span className="text-xl font-bold">12x </span><span className="font-display text-4xl font-bold sm:text-5xl">R$ {amount}*</span><p className="mt-2 text-sm text-muted-foreground">ou <strong className="text-foreground">R$ {cash}</strong> à vista</p></div>
+    <ul className="my-7 flex flex-1 flex-col gap-3">{features.map(feature => <li key={feature} className="flex gap-3"><Check className="mt-0.5 size-5 shrink-0 text-success" strokeWidth={3} /><span>{feature}</span></li>)}</ul>
+    {onSelect ? <Button size="lg" variant="outline" onClick={onSelect} className="h-auto w-full py-4 text-base font-bold">Escolher o Essencial</Button> : <Button asChild size="lg" className="h-auto w-full py-4 text-base font-bold"><a href={href}>Quero a preparação completa</a></Button>}
+    <small className="mt-3 text-center text-muted-foreground">Garantia incondicional de 7 dias</small>
+  </article>;
 }
 
 function SectionTitle({ eyebrow, title, light=false }: { eyebrow:string; title:string; light?:boolean }) {
