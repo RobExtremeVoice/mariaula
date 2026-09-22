@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ChevronDown, Check, Heart, ShieldCheck, Sparkles } from "lucide-react";
+import { ChevronDown, Check, Heart, ShieldCheck } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -89,7 +89,7 @@ export const Route = createFileRoute("/")({
 });
 
 function trackedCheckout(base = CHECKOUT) {
-  if (typeof window === "undefined") return CHECKOUT;
+  if (typeof window === "undefined") return base;
   const source = new URLSearchParams(window.location.search);
   const url = new URL(base);
   const values: string[] = [];
