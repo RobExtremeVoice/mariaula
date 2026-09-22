@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ChevronDown, Check, Heart, ShieldCheck } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { ChevronDown, Check, Heart, ShieldCheck, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import logo from "@/assets/imgi_30_o-poder-do-parto-2048x680-1.png.asset.json";
@@ -160,6 +160,28 @@ function Index() {
 
 function Offer() {
   const [upsellOpen, setUpsellOpen] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+  const openUpsell = () => { openerRef.current = document.activeElement as HTMLElement | null; setUpsellOpen(true); };
+  const closeUpsell = () => { setUpsellOpen(false); openerRef.current?.focus(); };
+  useEffect(() => {
+    if (!upsellOpen) return;
+    const node = dialogRef.current;
+    const focusables = () => Array.from(node?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])') ?? []);
+    focusables()[0]?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); closeUpsell(); return; }
+      if (event.key !== "Tab") return;
+      const items = focusables();
+      if (!items.length) return;
+      const first = items[0]!;
+      const last = items[items.length - 1]!;
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [upsellOpen]);
   return <div className="animate-in fade-in duration-700">
     <section className="bg-lavender px-5 py-16 text-center">
       <p className="font-semibold uppercase tracking-widest text-primary">Sua preparação começa agora</p>
@@ -217,7 +239,7 @@ function Offer() {
 
     <section aria-labelledby="faq-title" className="px-5 py-16 sm:py-24"><div className="mx-auto max-w-3xl"><SectionTitle id="faq-title" eyebrow="Dúvidas frequentes" title="Antes de escolher" /><div className="mt-9 divide-y divide-border border-y border-border">{faqs.map(([q,a])=><details key={q} className="group py-1"><summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-5 font-semibold text-primary">{q}<ChevronDown aria-hidden="true" className="size-5 shrink-0 transition group-open:rotate-180" /></summary><p className="pb-5 leading-relaxed text-muted-foreground">{a}</p></details>)}</div></div></section>
 
-    {upsellOpen && <div className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/60 p-4" role="dialog" aria-modal="true" aria-labelledby="upsell-title" onClick={() => setUpsellOpen(false)}><div className="w-full max-w-md rounded-md bg-background p-6 shadow-2xl sm:p-8" onClick={(event) => event.stopPropagation()}><p className="text-xs font-bold uppercase text-primary">Oferta especial — só agora</p><h2 id="upsell-title" className="mt-2 font-display text-2xl font-bold">O Poder do Parto Completo</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Leve o acompanhamento direto com a Mari pelo WhatsApp junto com a sua preparação Essencial.</p><div className="my-5 rounded-md bg-secondary p-4 text-center"><p className="text-sm text-muted-foreground line-through">de R$ 97,00</p><p className="font-display text-4xl font-bold text-primary">por R$ 48,50</p><p className="mt-1 text-xs font-bold uppercase text-primary">50% de desconto</p></div><div className="grid gap-3"><Button asChild className="h-auto py-4 font-bold"><a href={COMPLETE_UPSELL_CHECKOUT}>Sim, quero esta opção</a></Button><Button asChild variant="outline" className="h-auto py-3 font-bold"><a href={CHECKOUT}>Continuar apenas com o Essencial</a></Button><Button variant="ghost" onClick={() => setUpsellOpen(false)}>Voltar e comparar</Button></div><p className="mt-4 text-center text-xs text-muted-foreground">Garantia incondicional de 7 dias • Pagamento seguro</p></div></div>}
+    {upsellOpen && <div className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/70 p-4" onClick={closeUpsell}><div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="upsell-title" aria-describedby="upsell-description" className="relative w-full max-w-md rounded-md bg-background p-6 shadow-2xl sm:p-8" onClick={(event) => event.stopPropagation()}><Button variant="ghost" size="icon" aria-label="Fechar oferta especial" onClick={closeUpsell} className="absolute right-2 top-2 min-h-11 min-w-11 text-muted-foreground"><X aria-hidden="true" className="size-5" /></Button><p className="text-xs font-bold uppercase text-primary">Oferta especial — só agora</p><h2 id="upsell-title" className="mt-2 font-display text-2xl font-bold">O Poder do Parto Completo</h2><p id="upsell-description" className="mt-3 text-sm leading-relaxed text-muted-foreground">Leve o acompanhamento direto com a Mari pelo WhatsApp junto com a sua preparação Essencial.</p><div className="my-5 rounded-md bg-secondary p-4 text-center"><p className="text-sm text-muted-foreground line-through">de R$ 97,00</p><p className="font-display text-4xl font-bold text-primary">por R$ 48,50</p><p className="mt-1 text-xs font-bold uppercase text-primary">50% de desconto</p></div><div className="grid gap-3"><Button asChild className="h-auto py-4 font-bold"><a href={COMPLETE_UPSELL_CHECKOUT}>Sim, quero esta opção</a></Button><Button asChild variant="outline" className="h-auto py-3 font-bold"><a href={CHECKOUT}>Continuar apenas com o Essencial</a></Button><Button variant="ghost" onClick={closeUpsell}>Voltar e comparar</Button></div><p className="mt-4 text-center text-xs text-muted-foreground">Garantia incondicional de 7 dias • Pagamento seguro</p></div></div>}
 
     <footer className="bg-plum-deep px-5 py-12 text-center text-primary-foreground"><img src={footerLogo.url} alt="O Poder do Parto — Mari Betioli" className="mx-auto w-48" /><p className="mt-6 text-xs text-primary-foreground">© 2025 Mariana Betioli. Todos os direitos reservados.</p><div className="mt-4 flex justify-center gap-2 text-gold"><Heart aria-hidden="true" className="size-4" /></div></footer>
   </div>;
