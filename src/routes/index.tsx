@@ -166,11 +166,11 @@ function Offer() {
 
     <section className="px-5 py-16 sm:py-24">
       <div className="mx-auto max-w-6xl"><SectionTitle eyebrow="Por dentro do curso" title="Uma preparação completa, passo a passo" />
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{modules.map(([number,title,description,image]) => <article key={number} className="overflow-hidden rounded-md border border-border bg-card shadow-sm"><img src={image} alt={`${number} — ${title}`} className="aspect-[4/3] w-full object-cover" /><div className="p-5"><span className="text-xs font-bold uppercase text-primary">{number}</span><h3 className="mt-1 font-display text-lg font-bold">{title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p></div></article>)}</div>
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{modules.map(([number,title,description,image]) => <article key={number} className="overflow-hidden rounded-md border border-border bg-card shadow-sm"><img src={image} alt={`${number} — ${title}`} className="aspect-video w-full object-cover" /><div className="p-5"><span className="text-xs font-bold uppercase text-primary">{number}</span><h3 className="mt-1 font-display text-lg font-bold">{title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p></div></article>)}</div>
       </div>
     </section>
 
-    <section className="bg-plum-deep px-5 py-16 text-primary-foreground sm:py-24"><div className="mx-auto max-w-6xl"><SectionTitle light eyebrow="Bônus incríveis" title="Recursos extras para você se sentir ainda mais segura" /><div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-7">{bonuses.map((image,i)=><article key={image.asset_id} className="overflow-hidden rounded-md bg-primary-foreground/10"><img src={image.url} alt={`Bônus ${i+1}`} className="aspect-[3/4] w-full object-cover" /><div className="p-3 text-center text-sm font-bold">Bônus {i+1}</div></article>)}</div></div></section>
+    <section className="bg-plum-deep px-5 py-16 text-primary-foreground sm:py-24"><div className="mx-auto max-w-6xl"><SectionTitle light eyebrow="Bônus incríveis" title="Recursos extras para você se sentir ainda mais segura" /><div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{bonuses.map((image,i)=><article key={image.asset_id} className="overflow-hidden rounded-md bg-primary-foreground/10"><img src={image.url} alt={`Bônus ${i+1}`} className="aspect-video w-full object-cover" /><div className="p-3 text-center text-sm font-bold">Bônus {i+1}</div></article>)}</div></div></section>
 
     <section id="planos" className="scroll-mt-4 px-5 py-16 sm:py-24">
       <div className="mx-auto max-w-6xl">
