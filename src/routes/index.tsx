@@ -134,12 +134,14 @@ function Index() {
   }, [checkout, revealed]);
 
   return <main className="min-h-screen overflow-hidden bg-background text-foreground">
-    <section className="relative bg-plum-deep px-5 pb-16 pt-8 text-primary-foreground sm:pb-20">
-      <div className="mx-auto max-w-5xl text-center">
-        <img src={logo.url} alt="O Poder do Parto" className="mx-auto mb-8 w-52 sm:w-64" />
-        <h1 className="mx-auto max-w-4xl font-display text-3xl font-semibold leading-tight sm:text-5xl">A forma como você se prepara durante a gestação pode <strong className="text-gold">mudar completamente a sua experiência de parto.</strong></h1>
-        <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-primary-foreground/85 sm:text-xl">Prepare seu acompanhante, evite a violência obstétrica e <strong className="text-gold">viva o parto dos seus sonhos.</strong></p>
-        <div className="mx-auto mt-9 max-w-[420px] overflow-hidden rounded-md bg-foreground shadow-2xl ring-4 ring-primary-foreground/10">
+    <section className="relative flex min-h-[100svh] items-center bg-plum-deep px-4 py-4 text-primary-foreground sm:px-6 md:min-h-0 md:py-8 lg:min-h-[100svh]">
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-4 text-center md:grid-cols-[minmax(0,1fr)_minmax(260px,360px)] md:gap-10 md:text-left lg:grid-cols-[minmax(0,1fr)_minmax(300px,400px)] lg:gap-16">
+        <div className="min-w-0">
+          <img src={logo.url} alt="O Poder do Parto" className="mx-auto mb-4 w-40 sm:w-48 md:mx-0 md:mb-6 md:w-56" />
+          <h1 className="mx-auto max-w-3xl font-display text-[1.7rem] font-semibold leading-[1.14] sm:text-4xl md:mx-0 md:text-[2.6rem] lg:text-5xl">A forma como você se prepara durante a gestação pode <strong className="text-gold">mudar completamente a sua experiência de parto.</strong></h1>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-primary-foreground/85 sm:text-base md:mx-0 md:mt-5 lg:text-xl">Prepare seu acompanhante, evite a violência obstétrica e <strong className="text-gold">viva o parto dos seus sonhos.</strong></p>
+        </div>
+        <div className="mx-auto w-full max-w-[270px] overflow-hidden rounded-md bg-foreground shadow-2xl ring-4 ring-primary-foreground/10 sm:max-w-[300px] md:max-w-[360px] lg:max-w-[400px]">
           <vturb-smartplayer id="vid-6a28849f56303c2b198f3c7b" style={{ display: "block", margin: "0 auto", width: "100%", maxWidth: "400px", minHeight: "225px", backgroundImage: "url(https://cdn.converteai.net/639563c1-cf70-4484-8d65-6fd485e96ab9/6a28841cc9de06c926ca94dc/poster.jpg)", backgroundSize: "cover" }} />
         </div>
       </div>
@@ -160,6 +162,8 @@ function Offer() {
       <div className="mx-auto mt-8"><CTA /></div>
     </section>
 
+    <section className="bg-background px-5 py-16 sm:py-24"><div className="mx-auto max-w-6xl"><SectionTitle eyebrow="Depoimentos reais" title="Mais de 1.700 mulheres transformadas" /><img src={women.url} alt="Mulheres que participaram do Poder do Parto" className="mx-auto mt-8 max-h-72 max-w-full object-contain" /><div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">{[proof1,proof2,proof3,proof4].map((image,i)=><img key={image.asset_id} src={image.url} alt={`Depoimento de aluna ${i+1}`} className="w-full rounded-md border border-border shadow-sm" />)}</div></div></section>
+
     <section className="px-5 py-16 sm:py-24">
       <div className="mx-auto max-w-6xl"><SectionTitle eyebrow="Por dentro do curso" title="Uma preparação completa, passo a passo" />
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{modules.map(([number,title,description,image]) => <article key={number} className="overflow-hidden rounded-md border border-border bg-card shadow-sm"><img src={image} alt={`${number} — ${title}`} className="aspect-[4/3] w-full object-cover" /><div className="p-5"><span className="text-xs font-bold uppercase text-primary">{number}</span><h3 className="mt-1 font-display text-lg font-bold">{title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p></div></article>)}</div>
@@ -167,10 +171,6 @@ function Offer() {
     </section>
 
     <section className="bg-plum-deep px-5 py-16 text-primary-foreground sm:py-24"><div className="mx-auto max-w-6xl"><SectionTitle light eyebrow="Bônus incríveis" title="Recursos extras para você se sentir ainda mais segura" /><div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-7">{bonuses.map((image,i)=><article key={image.asset_id} className="overflow-hidden rounded-md bg-primary-foreground/10"><img src={image.url} alt={`Bônus ${i+1}`} className="aspect-[3/4] w-full object-cover" /><div className="p-3 text-center text-sm font-bold">Bônus {i+1}</div></article>)}</div></div></section>
-
-    <section className="bg-background px-5 py-16 sm:py-24"><div className="mx-auto max-w-6xl"><SectionTitle eyebrow="Depoimentos reais" title="Mais de 1.700 mulheres transformadas" /><img src={women.url} alt="Mulheres que participaram do Poder do Parto" className="mx-auto mt-8 max-h-72 max-w-full object-contain" /><div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">{[proof1,proof2,proof3,proof4].map((image,i)=><img key={image.asset_id} src={image.url} alt={`Depoimento de aluna ${i+1}`} className="w-full rounded-md border border-border shadow-sm" />)}</div></div></section>
-
-    <section className="bg-secondary px-5 py-16 sm:py-20"><div className="mx-auto grid max-w-4xl items-center gap-10 md:grid-cols-[260px_1fr]"><img src={guarantee.url} alt="Garantia incondicional de 7 dias" className="mx-auto w-56" /><div><div className="flex items-center gap-2 text-primary"><ShieldCheck /><span className="font-bold uppercase">Seu risco é zero</span></div><h2 className="mt-3 font-display text-3xl font-bold text-primary">7 dias de garantia incondicional</h2><p className="mt-4 leading-relaxed text-muted-foreground">Teste o curso completo. Se não amar o conteúdo ou sentir que ele não é para você, devolvemos 100% do valor pago — sem burocracia e sem questionamentos.</p></div></div></section>
 
     <section id="planos" className="scroll-mt-4 px-5 py-16 sm:py-24">
       <div className="mx-auto max-w-6xl">
@@ -192,6 +192,8 @@ function Offer() {
         </div>
       </div>
     </section>
+
+    <section className="bg-secondary px-5 py-16 sm:py-20"><div className="mx-auto grid max-w-4xl items-center gap-8 text-center md:grid-cols-[220px_1fr] md:text-left"><img src={guarantee.url} alt="Garantia incondicional de 7 dias" className="mx-auto w-48 sm:w-56" /><div><div className="flex items-center justify-center gap-2 text-primary md:justify-start"><ShieldCheck className="shrink-0" /><span className="font-bold uppercase">Seu risco é zero</span></div><h2 className="mt-3 font-display text-3xl font-bold text-primary">7 dias de garantia incondicional</h2><p className="mt-4 leading-relaxed text-muted-foreground">Teste o curso completo. Se não amar o conteúdo ou sentir que ele não é para você, devolvemos 100% do valor pago — sem burocracia e sem questionamentos.</p></div></div></section>
 
     <section className="px-5 py-16 sm:py-24"><div className="mx-auto max-w-3xl"><SectionTitle eyebrow="Dúvidas frequentes" title="Antes de escolher" /><div className="mt-9 divide-y divide-border border-y border-border">{faqs.map(([q,a])=><details key={q} className="group py-1"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-semibold text-primary">{q}<ChevronDown className="size-5 shrink-0 transition group-open:rotate-180" /></summary><p className="pb-5 leading-relaxed text-muted-foreground">{a}</p></details>)}</div></div></section>
 
