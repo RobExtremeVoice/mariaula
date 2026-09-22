@@ -204,7 +204,7 @@ function Offer() {
         <SectionTitle id="planos-title" eyebrow="Escolha sua experiência" title="Qual preparação combina com você?" />
         <p className="mx-auto mt-5 max-w-3xl text-center text-muted-foreground">Os dois planos oferecem o curso completo. No plano Completo, você também conta com um canal direto com a Mari durante a gestação.</p>
         <div className="mt-12 grid gap-8 lg:grid-cols-2">
-          <PlanCard name="O Poder do Parto Essencial" subtitle="Para quem quer compreender o parto, reconhecer escolhas e chegar mais preparada." amount="30,72" cash="297,00" features={essentialFeatures} onSelect={() => setUpsellOpen(true)} />
+          <PlanCard name="O Poder do Parto Essencial" subtitle="Para quem quer compreender o parto, reconhecer escolhas e chegar mais preparada." amount="30,72" cash="297,00" features={essentialFeatures} onSelect={openUpsell} />
           <PlanCard name="O Poder do Parto Completo" subtitle="Para quem quer todo o curso e a tranquilidade de poder falar diretamente com a Mari durante a gestação." amount="40,75" cash="394,00" features={completeFeatures} href={COMPLETE_CHECKOUT} featured />
         </div>
       </div>
