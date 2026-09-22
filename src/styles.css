@@ -4,6 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html {
+  scroll-behavior: smooth;
+}
+
+
 /*
  * Design system definition.
  *
