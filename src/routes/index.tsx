@@ -135,13 +135,13 @@ function Index() {
 
   return <main className="min-h-screen overflow-hidden bg-background text-foreground">
     <section className="relative flex min-h-[100svh] items-center bg-plum-deep px-4 py-4 text-primary-foreground sm:px-6 md:min-h-0 md:py-8 lg:min-h-[100svh]">
-      <div className="mx-auto grid w-full max-w-6xl items-center gap-4 text-center md:grid-cols-[minmax(0,1fr)_minmax(260px,360px)] md:gap-10 md:text-left lg:grid-cols-[minmax(0,1fr)_minmax(300px,400px)] lg:gap-16">
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-4 text-center md:grid-cols-[minmax(0,1fr)_minmax(260px,350px)] md:gap-10 md:text-left lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:gap-16">
         <div className="min-w-0">
           <img src={logo.url} alt="O Poder do Parto" className="mx-auto mb-4 w-40 sm:w-48 md:mx-0 md:mb-6 md:w-56" />
           <h1 className="mx-auto max-w-3xl font-display text-[1.7rem] font-semibold leading-[1.14] sm:text-4xl md:mx-0 md:text-[2.6rem] lg:text-5xl">A forma como você se prepara durante a gestação pode <strong className="text-gold">mudar completamente a sua experiência de parto.</strong></h1>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-primary-foreground/85 sm:text-base md:mx-0 md:mt-5 lg:text-xl">Prepare seu acompanhante, evite a violência obstétrica e <strong className="text-gold">viva o parto dos seus sonhos.</strong></p>
         </div>
-        <div className="mx-auto w-full max-w-[270px] overflow-hidden rounded-md bg-foreground shadow-2xl ring-4 ring-primary-foreground/10 sm:max-w-[300px] md:max-w-[360px] lg:max-w-[400px]">
+        <div className="mx-auto w-full max-w-[270px] overflow-hidden rounded-md bg-foreground shadow-2xl ring-4 ring-primary-foreground/10 sm:max-w-[300px] md:max-w-[350px] lg:max-w-[380px]">
           <vturb-smartplayer id="vid-6a28849f56303c2b198f3c7b" style={{ display: "block", margin: "0 auto", width: "100%", maxWidth: "400px", minHeight: "225px", backgroundImage: "url(https://cdn.converteai.net/639563c1-cf70-4484-8d65-6fd485e96ab9/6a28841cc9de06c926ca94dc/poster.jpg)", backgroundSize: "cover" }} />
         </div>
       </div>
