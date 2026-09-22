@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ChevronDown, Check, Heart, ShieldCheck } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { ChevronDown, Check, Heart, ShieldCheck, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import logo from "@/assets/imgi_30_o-poder-do-parto-2048x680-1.png.asset.json";
@@ -133,28 +133,55 @@ function Index() {
     document.querySelectorAll<HTMLAnchorElement>('a[href*="hotmart.com"]').forEach((link) => { link.href = trackedCheckout(link.href); });
   }, [checkout, revealed]);
 
-  return <main className="min-h-screen overflow-hidden bg-background text-foreground">
-    <section className="relative flex min-h-[100svh] items-center bg-plum-deep px-4 py-4 text-primary-foreground sm:px-6 md:min-h-0 md:py-8 lg:min-h-[100svh]">
+  return <>
+    <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-md focus:bg-background focus:px-4 focus:py-3 focus:text-sm focus:font-bold focus:text-primary focus:shadow-lg">Ir para o conteúdo principal</a>
+    <main id="conteudo" className="min-h-screen overflow-hidden bg-background text-foreground">
+    <section aria-labelledby="hero-title" className="relative flex min-h-[100svh] items-center bg-plum-deep px-4 py-4 text-primary-foreground sm:px-6 md:min-h-0 md:py-8 lg:min-h-[100svh]">
       <div className="mx-auto grid w-full max-w-6xl items-center gap-4 text-center md:grid-cols-[minmax(0,1fr)_minmax(260px,350px)] md:gap-10 md:text-left lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:gap-16">
         <div className="min-w-0">
-          <img src={logo.url} alt="O Poder do Parto" className="mx-auto mb-4 w-40 sm:w-48 md:mx-0 md:mb-6 md:w-56" />
-          <h1 className="mx-auto max-w-3xl font-display text-[1.7rem] font-semibold leading-[1.14] sm:text-4xl md:mx-0 md:text-[2.6rem] lg:text-5xl">A forma como você se prepara durante a gestação pode <strong className="text-gold">mudar completamente a sua experiência de parto.</strong></h1>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-primary-foreground/85 sm:text-base md:mx-0 md:mt-5 lg:text-xl">Prepare seu acompanhante, evite a violência obstétrica e <strong className="text-gold">viva o parto dos seus sonhos.</strong></p>
+          <img src={logo.url} alt="O Poder do Parto — curso de preparação para o parto com Mari Betioli" className="mx-auto mb-4 w-40 sm:w-48 md:mx-0 md:mb-6 md:w-56" />
+          <h1 id="hero-title" className="mx-auto max-w-3xl font-display text-[1.7rem] font-semibold leading-[1.14] sm:text-4xl md:mx-0 md:text-[2.6rem] lg:text-5xl">A forma como você se prepara durante a gestação pode <strong className="text-gold">mudar completamente a sua experiência de parto.</strong></h1>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-primary-foreground/95 sm:text-base md:mx-0 md:mt-5 lg:text-xl">Prepare seu acompanhante, evite a violência obstétrica e <strong className="text-gold">viva o parto dos seus sonhos.</strong></p>
         </div>
-        <div className="mx-auto w-full max-w-[270px] overflow-hidden rounded-md bg-foreground shadow-2xl ring-4 ring-primary-foreground/10 sm:max-w-[300px] md:max-w-[350px] lg:max-w-[380px]">
+        <div role="region" aria-label="Aula em vídeo com Mari Betioli" className="mx-auto w-full max-w-[270px] overflow-hidden rounded-md bg-foreground shadow-2xl ring-4 ring-primary-foreground/10 sm:max-w-[300px] md:max-w-[350px] lg:max-w-[380px]">
           <vturb-smartplayer id="vid-6a28849f56303c2b198f3c7b" style={{ display: "block", margin: "0 auto", width: "100%", maxWidth: "400px", minHeight: "225px", backgroundImage: "url(https://cdn.converteai.net/639563c1-cf70-4484-8d65-6fd485e96ab9/6a28841cc9de06c926ca94dc/poster.jpg)", backgroundSize: "cover" }} />
         </div>
       </div>
     </section>
 
-    {revealed ? <Offer /> : <div className="bg-primary px-5 py-6 text-center text-sm text-primary-foreground/80">Assista à aula completa para liberar uma condição especial.</div>}
+    <div role="status" aria-live="polite">
+      {revealed ? <Offer /> : <p className="bg-primary px-5 py-6 text-center text-sm text-primary-foreground">Assista à aula completa para liberar uma condição especial.</p>}
+    </div>
 
-    <Button onClick={() => setRevealed(true)} variant="outline" size="sm" className="fixed bottom-3 right-3 z-50 border-primary/20 bg-background/90 text-xs text-muted-foreground shadow-md backdrop-blur">Revelar conteúdo agora</Button>
-  </main>;
+    <Button onClick={() => setRevealed(true)} variant="outline" size="sm" className="fixed bottom-3 right-3 z-50 min-h-11 border-primary/40 bg-background text-xs font-semibold text-primary shadow-md">Revelar conteúdo agora</Button>
+  </main>
+  </>;
 }
 
 function Offer() {
   const [upsellOpen, setUpsellOpen] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+  const openUpsell = () => { openerRef.current = document.activeElement as HTMLElement | null; setUpsellOpen(true); };
+  const closeUpsell = () => { setUpsellOpen(false); openerRef.current?.focus(); };
+  useEffect(() => {
+    if (!upsellOpen) return;
+    const node = dialogRef.current;
+    const focusables = () => Array.from(node?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])') ?? []);
+    focusables()[0]?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); closeUpsell(); return; }
+      if (event.key !== "Tab") return;
+      const items = focusables();
+      if (!items.length) return;
+      const first = items[0]!;
+      const last = items[items.length - 1]!;
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [upsellOpen]);
   return <div className="animate-in fade-in duration-700">
     <section className="bg-lavender px-5 py-16 text-center">
       <p className="font-semibold uppercase tracking-widest text-primary">Sua preparação começa agora</p>
@@ -162,44 +189,59 @@ function Offer() {
       <div className="mx-auto mt-8"><CTA /></div>
     </section>
 
-    <section className="bg-background px-5 py-16 sm:py-24"><div className="mx-auto max-w-6xl"><SectionTitle eyebrow="Depoimentos reais" title="Mais de 1.700 mulheres transformadas" /><img src={women.url} alt="Mulheres que participaram do Poder do Parto" className="mx-auto mt-8 max-h-72 max-w-full object-contain" /><div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">{[proof1,proof2,proof3,proof4].map((image,i)=><img key={image.asset_id} src={image.url} alt={`Depoimento de aluna ${i+1}`} className="w-full rounded-md border border-border shadow-sm" />)}</div></div></section>
+    <section aria-labelledby="depoimentos-title" className="bg-background px-5 py-16 sm:py-24"><div className="mx-auto max-w-6xl"><SectionTitle id="depoimentos-title" eyebrow="Depoimentos reais" title="Mais de 1.700 mulheres transformadas" /><img src={women.url} alt="Grupo de mães que fizeram o curso O Poder do Parto com seus bebês no colo" className="mx-auto mt-8 max-h-72 max-w-full object-contain" /><ul className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">{[proof1,proof2,proof3,proof4].map((image,i)=><li key={image.asset_id}><img src={image.url} alt={`Print de conversa no WhatsApp com o depoimento ${i+1} de uma aluna do curso`} className="w-full rounded-md border border-border shadow-sm" /></li>)}</ul></div></section>
 
-    <section className="px-5 py-16 sm:py-24">
-      <div className="mx-auto max-w-6xl"><SectionTitle eyebrow="Por dentro do curso" title="Uma preparação completa, passo a passo" />
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{modules.map(([number,title,description,image]) => <article key={number} className="overflow-hidden rounded-md border border-border bg-card shadow-sm"><img src={image} alt={`${number} — ${title}`} className="aspect-video w-full object-cover" /><div className="p-5"><span className="text-xs font-bold uppercase text-primary">{number}</span><h3 className="mt-1 font-display text-lg font-bold">{title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p></div></article>)}</div>
+    <section aria-labelledby="modulos-title" className="px-5 py-16 sm:py-24">
+      <div className="mx-auto max-w-6xl"><SectionTitle id="modulos-title" eyebrow="Por dentro do curso" title="Uma preparação completa, passo a passo" />
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{modules.map(([number,title,description,image]) => <li key={number}><article className="h-full overflow-hidden rounded-md border border-border bg-card shadow-sm"><img src={image} alt={`Capa do ${number}: ${title}`} className="aspect-video w-full object-cover" /><div className="p-5"><span className="text-xs font-bold uppercase text-primary">{number}</span><h3 className="mt-1 font-display text-lg font-bold">{title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p></div></article></li>)}</ul>
       </div>
     </section>
 
-    <section className="bg-plum-deep px-5 py-16 text-primary-foreground sm:py-24"><div className="mx-auto max-w-6xl"><SectionTitle light eyebrow="Bônus incríveis" title="Recursos extras para você se sentir ainda mais segura" /><div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{bonuses.map((image,i)=><article key={image.asset_id} className="overflow-hidden rounded-md bg-primary-foreground/10"><img src={image.url} alt={`Bônus ${i+1}`} className="aspect-video w-full object-cover" /><div className="p-3 text-center text-sm font-bold">Bônus {i+1}</div></article>)}</div></div></section>
+    <section aria-labelledby="bonus-title" className="bg-plum-deep px-5 py-16 text-primary-foreground sm:py-24"><div className="mx-auto max-w-6xl"><SectionTitle id="bonus-title" light eyebrow="Bônus incríveis" title="Recursos extras para você se sentir ainda mais segura" /><ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{bonuses.map((image,i)=><li key={image.asset_id}><article className="h-full overflow-hidden rounded-md bg-primary-foreground/10"><img src={image.url} alt={`Capa do bônus ${i+1} incluído no curso`} className="aspect-video w-full object-cover" /><div className="p-3 text-center text-sm font-bold">Bônus {i+1}</div></article></li>)}</ul></div></section>
 
-    <section id="planos" className="scroll-mt-4 px-5 py-16 sm:py-24">
+    <section id="planos" aria-labelledby="planos-title" className="scroll-mt-4 px-5 py-16 sm:py-24">
       <div className="mx-auto max-w-6xl">
-        <SectionTitle eyebrow="Escolha sua experiência" title="Qual preparação combina com você?" />
+        <SectionTitle id="planos-title" eyebrow="Escolha sua experiência" title="Qual preparação combina com você?" />
         <p className="mx-auto mt-5 max-w-3xl text-center text-muted-foreground">Os dois planos oferecem o curso completo. No plano Completo, você também conta com um canal direto com a Mari durante a gestação.</p>
         <div className="mt-12 grid gap-8 lg:grid-cols-2">
-          <PlanCard name="O Poder do Parto Essencial" subtitle="Para quem quer compreender o parto, reconhecer escolhas e chegar mais preparada." amount="30,72" cash="297,00" features={essentialFeatures} onSelect={() => setUpsellOpen(true)} />
+          <PlanCard name="O Poder do Parto Essencial" subtitle="Para quem quer compreender o parto, reconhecer escolhas e chegar mais preparada." amount="30,72" cash="297,00" features={essentialFeatures} onSelect={openUpsell} />
           <PlanCard name="O Poder do Parto Completo" subtitle="Para quem quer todo o curso e a tranquilidade de poder falar diretamente com a Mari durante a gestação." amount="40,75" cash="394,00" features={completeFeatures} href={COMPLETE_CHECKOUT} featured />
         </div>
       </div>
     </section>
 
-    <section className="px-5 pb-16 sm:pb-24">
+    <section aria-labelledby="comparacao-title" className="px-5 pb-16 sm:pb-24">
       <div className="mx-auto max-w-6xl">
-        <SectionTitle eyebrow="Compare com calma" title="Veja a diferença entre os planos" />
+        <SectionTitle id="comparacao-title" eyebrow="Compare com calma" title="Veja a diferença entre os planos" />
         <div className="mt-10 overflow-hidden rounded-md border border-border bg-card shadow-sm">
-          <div className="grid grid-cols-[minmax(0,1.8fr)_minmax(70px,0.6fr)_minmax(70px,0.6fr)] bg-secondary px-4 py-4 text-sm font-bold sm:px-6"><div>O que você recebe</div><div className="text-center">Essencial</div><div className="text-center">Completo</div></div>
-          {comparison.map(([label, essential, complete]) => <div key={label} className="grid grid-cols-[minmax(0,1.8fr)_minmax(70px,0.6fr)_minmax(70px,0.6fr)] items-center border-t border-border px-4 py-4 text-sm sm:px-6 sm:text-base"><div>{label}</div><div>{essential ? <Check className="mx-auto size-5 text-success" strokeWidth={3} /> : <span className="block text-center text-muted-foreground">—</span>}</div><div>{complete ? <Check className="mx-auto size-5 text-success" strokeWidth={3} /> : <span className="block text-center text-muted-foreground">—</span>}</div></div>)}
+          <table className="w-full border-collapse text-left">
+            <caption className="sr-only">Comparação entre o plano Essencial e o plano Completo</caption>
+            <thead>
+              <tr className="bg-secondary text-sm font-bold">
+                <th scope="col" className="px-4 py-4 sm:px-6">O que você recebe</th>
+                <th scope="col" className="px-2 py-4 text-center">Essencial</th>
+                <th scope="col" className="px-2 py-4 text-center">Completo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {comparison.map(([label, essential, complete]) => <tr key={label} className="border-t border-border text-sm sm:text-base">
+                <th scope="row" className="px-4 py-4 text-left font-normal sm:px-6">{label}</th>
+                <td className="px-2 py-4 text-center">{essential ? <><Check aria-hidden="true" className="mx-auto size-5 text-success" strokeWidth={3} /><span className="sr-only">Incluído</span></> : <><span aria-hidden="true" className="text-muted-foreground">—</span><span className="sr-only">Não incluído</span></>}</td>
+                <td className="px-2 py-4 text-center">{complete ? <><Check aria-hidden="true" className="mx-auto size-5 text-success" strokeWidth={3} /><span className="sr-only">Incluído</span></> : <><span aria-hidden="true" className="text-muted-foreground">—</span><span className="sr-only">Não incluído</span></>}</td>
+              </tr>)}
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
 
-    <section className="bg-secondary px-5 py-16 sm:py-20"><div className="mx-auto grid max-w-4xl items-center gap-8 text-center md:grid-cols-[220px_1fr] md:text-left"><img src={guarantee.url} alt="Garantia incondicional de 7 dias" className="mx-auto w-48 sm:w-56" /><div><div className="flex items-center justify-center gap-2 text-primary md:justify-start"><ShieldCheck className="shrink-0" /><span className="font-bold uppercase">Seu risco é zero</span></div><h2 className="mt-3 font-display text-3xl font-bold text-primary">7 dias de garantia incondicional</h2><p className="mt-4 leading-relaxed text-muted-foreground">Teste o curso completo. Se não amar o conteúdo ou sentir que ele não é para você, devolvemos 100% do valor pago — sem burocracia e sem questionamentos.</p></div></div></section>
+    <section aria-labelledby="garantia-title" className="bg-secondary px-5 py-16 sm:py-20"><div className="mx-auto grid max-w-4xl items-center gap-8 text-center md:grid-cols-[220px_1fr] md:text-left"><img src={guarantee.url} alt="Selo de garantia incondicional de 7 dias do curso O Poder do Parto" className="mx-auto w-48 sm:w-56" /><div><div className="flex items-center justify-center gap-2 text-primary md:justify-start"><ShieldCheck aria-hidden="true" className="shrink-0" /><span className="font-bold uppercase">Seu risco é zero</span></div><h2 id="garantia-title" className="mt-3 font-display text-3xl font-bold text-primary">7 dias de garantia incondicional</h2><p className="mt-4 leading-relaxed text-muted-foreground">Teste o curso completo. Se não amar o conteúdo ou sentir que ele não é para você, devolvemos 100% do valor pago — sem burocracia e sem questionamentos.</p></div></div></section>
 
-    <section className="px-5 py-16 sm:py-24"><div className="mx-auto max-w-3xl"><SectionTitle eyebrow="Dúvidas frequentes" title="Antes de escolher" /><div className="mt-9 divide-y divide-border border-y border-border">{faqs.map(([q,a])=><details key={q} className="group py-1"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-semibold text-primary">{q}<ChevronDown className="size-5 shrink-0 transition group-open:rotate-180" /></summary><p className="pb-5 leading-relaxed text-muted-foreground">{a}</p></details>)}</div></div></section>
+    <section aria-labelledby="faq-title" className="px-5 py-16 sm:py-24"><div className="mx-auto max-w-3xl"><SectionTitle id="faq-title" eyebrow="Dúvidas frequentes" title="Antes de escolher" /><div className="mt-9 divide-y divide-border border-y border-border">{faqs.map(([q,a])=><details key={q} className="group py-1"><summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-5 font-semibold text-primary">{q}<ChevronDown aria-hidden="true" className="size-5 shrink-0 transition group-open:rotate-180" /></summary><p className="pb-5 leading-relaxed text-muted-foreground">{a}</p></details>)}</div></div></section>
 
-    {upsellOpen && <div className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/60 p-4" role="dialog" aria-modal="true" aria-labelledby="upsell-title" onClick={() => setUpsellOpen(false)}><div className="w-full max-w-md rounded-md bg-background p-6 shadow-2xl sm:p-8" onClick={(event) => event.stopPropagation()}><p className="text-xs font-bold uppercase text-primary">Oferta especial — só agora</p><h2 id="upsell-title" className="mt-2 font-display text-2xl font-bold">O Poder do Parto Completo</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Leve o acompanhamento direto com a Mari pelo WhatsApp junto com a sua preparação Essencial.</p><div className="my-5 rounded-md bg-secondary p-4 text-center"><p className="text-sm text-muted-foreground line-through">de R$ 97,00</p><p className="font-display text-4xl font-bold text-primary">por R$ 48,50</p><p className="mt-1 text-xs font-bold uppercase text-primary">50% de desconto</p></div><div className="grid gap-3"><Button asChild className="h-auto py-4 font-bold"><a href={COMPLETE_UPSELL_CHECKOUT}>Sim, quero esta opção</a></Button><Button asChild variant="outline" className="h-auto py-3 font-bold"><a href={CHECKOUT}>Continuar apenas com o Essencial</a></Button><Button variant="ghost" onClick={() => setUpsellOpen(false)}>Voltar e comparar</Button></div><p className="mt-4 text-center text-xs text-muted-foreground">Garantia incondicional de 7 dias • Pagamento seguro</p></div></div>}
+    {upsellOpen && <div className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/70 p-4" onClick={closeUpsell}><div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="upsell-title" aria-describedby="upsell-description" className="relative w-full max-w-md rounded-md bg-background p-6 shadow-2xl sm:p-8" onClick={(event) => event.stopPropagation()}><Button variant="ghost" size="icon" aria-label="Fechar oferta especial" onClick={closeUpsell} className="absolute right-2 top-2 min-h-11 min-w-11 text-muted-foreground"><X aria-hidden="true" className="size-5" /></Button><p className="text-xs font-bold uppercase text-primary">Oferta especial — só agora</p><h2 id="upsell-title" className="mt-2 font-display text-2xl font-bold">O Poder do Parto Completo</h2><p id="upsell-description" className="mt-3 text-sm leading-relaxed text-muted-foreground">Leve o acompanhamento direto com a Mari pelo WhatsApp junto com a sua preparação Essencial.</p><div className="my-5 rounded-md bg-secondary p-4 text-center"><p className="text-sm text-muted-foreground line-through">de R$ 97,00</p><p className="font-display text-4xl font-bold text-primary">por R$ 48,50</p><p className="mt-1 text-xs font-bold uppercase text-primary">50% de desconto</p></div><div className="grid gap-3"><Button asChild className="h-auto py-4 font-bold"><a href={COMPLETE_UPSELL_CHECKOUT}>Sim, quero esta opção</a></Button><Button asChild variant="outline" className="h-auto py-3 font-bold"><a href={CHECKOUT}>Continuar apenas com o Essencial</a></Button><Button variant="ghost" onClick={closeUpsell}>Voltar e comparar</Button></div><p className="mt-4 text-center text-xs text-muted-foreground">Garantia incondicional de 7 dias • Pagamento seguro</p></div></div>}
 
-    <footer className="bg-plum-deep px-5 py-12 text-center text-primary-foreground"><img src={footerLogo.url} alt="O Poder do Parto" className="mx-auto w-48" /><p className="mt-6 text-xs text-primary-foreground/60">© 2025 Mariana Betioli. Todos os direitos reservados.</p><div className="mt-4 flex justify-center gap-2 text-gold"><Heart className="size-4" /></div></footer>
+    <footer className="bg-plum-deep px-5 py-12 text-center text-primary-foreground"><img src={footerLogo.url} alt="O Poder do Parto — Mari Betioli" className="mx-auto w-48" /><p className="mt-6 text-xs text-primary-foreground">© 2025 Mariana Betioli. Todos os direitos reservados.</p><div className="mt-4 flex justify-center gap-2 text-gold"><Heart aria-hidden="true" className="size-4" /></div></footer>
   </div>;
 }
 
@@ -208,12 +250,12 @@ function PlanCard({ name, subtitle, amount, cash, features, href, featured=false
     {featured && <span className="absolute right-6 top-0 -translate-y-1/2 rounded-md bg-primary px-4 py-2 text-xs font-bold uppercase text-primary-foreground">Mais escolhido</span>}
     <p className="text-xs font-bold uppercase text-primary">Plano {featured ? "completo" : "essencial"}</p><h3 className="mt-3 font-display text-2xl font-bold sm:text-3xl">{name}</h3><p className="mt-3 min-h-16 text-muted-foreground">{subtitle}</p>
     <div className="mt-7 text-primary"><span className="text-xl font-bold">12x </span><span className="font-display text-4xl font-bold sm:text-5xl">R$ {amount}*</span><p className="mt-2 text-sm text-muted-foreground">ou <strong className="text-foreground">R$ {cash}</strong> à vista</p></div>
-    <ul className="my-7 flex flex-1 flex-col gap-3">{features.map(feature => <li key={feature} className="flex gap-3"><Check className="mt-0.5 size-5 shrink-0 text-success" strokeWidth={3} /><span>{feature}</span></li>)}</ul>
+    <ul className="my-7 flex flex-1 flex-col gap-3">{features.map(feature => <li key={feature} className="flex gap-3"><Check aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-success" strokeWidth={3} /><span>{feature}</span></li>)}</ul>
     {onSelect ? <Button size="lg" variant="outline" onClick={onSelect} className="h-auto w-full py-4 text-base font-bold">Escolher o Essencial</Button> : <Button asChild size="lg" className="h-auto w-full py-4 text-base font-bold"><a href={href}>Quero a preparação completa</a></Button>}
     <small className="mt-3 text-center text-muted-foreground">Garantia incondicional de 7 dias</small>
   </article>;
 }
 
-function SectionTitle({ eyebrow, title, light=false }: { eyebrow:string; title:string; light?:boolean }) {
-  return <div className="text-center"><p className={`text-sm font-bold uppercase tracking-widest ${light ? "text-gold" : "text-primary"}`}>{eyebrow}</p><h2 className={`mx-auto mt-3 max-w-3xl font-display text-3xl font-bold sm:text-4xl ${light ? "text-primary-foreground" : "text-primary"}`}>{title}</h2></div>;
+function SectionTitle({ eyebrow, title, light=false, id }: { eyebrow:string; title:string; light?:boolean; id?:string }) {
+  return <div className="text-center"><p className={`text-sm font-bold uppercase tracking-widest ${light ? "text-gold" : "text-primary"}`}>{eyebrow}</p><h2 id={id} className={`mx-auto mt-3 max-w-3xl font-display text-3xl font-bold sm:text-4xl ${light ? "text-primary-foreground" : "text-primary"}`}>{title}</h2></div>;
 }
